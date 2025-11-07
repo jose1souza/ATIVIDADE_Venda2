@@ -1,5 +1,7 @@
 package view;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import controller.ControllerItem;
@@ -8,47 +10,63 @@ import controller.ControllerSale;
 import model.SalePresenter;
 
 public class Main {
-	static Scanner scanner = new Scanner(System.in);
-	public static int menu() {
-		System.out.println("1- Pedir produto");
-		System.out.println("2- Fazer a compra");
-		System.out.println("3- Conferir nota");
-		System.out.println("0- Sair");
-		return scanner.nextInt();
-	}
-
 	public static void main(String[] args) {
-	    int option = menu();
-	    ControllerPedido pedido;
-	    ControllerItem item = null;
-	    ControllerSale sale = null;
-	    
-	    do {
-	    	switch(option) {
-	    	case 1: 
-	    		System.out.println("Produto, preco e qtd");
-	    	    String name = scanner.nextLine();
-	    	    double price = scanner.nextDouble();
-	    	    int qtd = scanner.nextInt();
-	    	    pedido = new ControllerPedido(name, price);
-	    	    item = new ControllerItem(pedido.getProduct(), qtd);
-	    		break;
-	    	case 2:
-	    		if (item != null)
-	    			sale = new ControllerSale(item);
-	    		throw new IllegalArgumentException("Peça um produto primeiro");
+		Scanner scanner = new Scanner(System.in);
+		List<ControllerItem> itens = new ArrayList<>();
+		ControllerSale sale = null;
+
+		while (true) {
+			System.out.println("1- Adicionar produto");
+			System.out.println("2- Finalizar compra");
+			System.out.println("3- Conferir nota");
+			System.out.println("0- Sair");
+			System.out.print("Escolha: ");
+			int option = Integer.parseInt(scanner.nextLine());
+
+			if (option == 0)
+				break;
+
+			switch (option) {
+			case 1:
+				System.out.print("Produto: ");
+				String name = scanner.nextLine();
+
+				System.out.print("Preço: ");
+				double price = Double.parseDouble(scanner.nextLine());
+
+				System.out.print("Quantidade: ");
+				int qtd = Integer.parseInt(scanner.nextLine());
+
+				ControllerPedido pedido = new ControllerPedido(name, price);
+				ControllerItem item = new ControllerItem(pedido.getProduct(), qtd);
+				itens.add(item);
+				System.out.println("Produto adicionado.");
+				break;
+
+			case 2:
+				if (!itens.isEmpty()) {
+					sale = new ControllerSale(itens);
+					System.out.println("Compra realizada com sucesso.");
+				} else {
+					System.out.println("Nenhum produto adicionado.");
+				}
+				break;
+
 			case 3:
 				if (sale != null) {
 					SalePresenter presenter = new ConsoleSalePresenter();
-		    		presenter.show(sale.getSale());
+					presenter.show(sale.getSale());
+				} else {
+					System.out.println("Nenhuma compra realizada.");
 				}
-	    		throw new IllegalArgumentException("Faça uma compra primeiro");
-	    	case 0:
-	    		System.out.println("Saindo...");
-	    		break;
-	    	}
-	    }while(option != 0);
-		
-	}
+				break;
 
+			default:
+				System.out.println("⚠pção inválida.");
+			}
+		}
+
+		System.out.println("Saindo...");
+		scanner.close();
+	}
 }

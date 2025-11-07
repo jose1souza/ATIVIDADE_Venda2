@@ -1,16 +1,20 @@
 package controller;
 
+import java.util.List;
+
 import model.Sale;
 
 public class ControllerSale {
-	Sale sale;
+	private Sale sale;
 
-	public ControllerSale(ControllerItem controller){
+	public ControllerSale(List<ControllerItem> itens) {
 		sale = new Sale();
-		sale.addSaleItem(controller.getItem());
+		for (ControllerItem item : itens) {
+			sale.addSaleItem(item.getItem());
+		}
 	}
 
-	public Sale getSale(){
-	    return sale;
+	public Sale getSale() {
+		return sale;
 	}
 }
