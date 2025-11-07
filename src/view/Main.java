@@ -62,7 +62,7 @@ public class Main {
 				break;
 
 			default:
-				System.out.println("⚠pção inválida.");
+				System.out.println("Opção inválida.");
 			}
 		}
 
